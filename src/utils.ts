@@ -1,7 +1,8 @@
-import { FunctionComponent } from "react";
-import { Attachment, TemplateRegistry, TemplateWithComponent, TemplateWithTypes } from "./types";
-import { defaultTemplate } from "./DefaultTemplate";
 import { OpenAttestationDocument, v2, v3 } from "@tradetrust-tt/tradetrust";
+import { isWrappedV2Document, isWrappedV3Document, SignedVerifiableCredential, vc } from "@trustvc/trustvc";
+import { FunctionComponent } from "react";
+import { defaultTemplate } from "./DefaultTemplate";
+import { Attachment, TemplateRegistry, TemplateWithComponent, TemplateWithTypes } from "./types";
 
 export const repeat = (times: number) => (callback: (index: number) => any) =>
   Array(times)
@@ -24,7 +25,7 @@ export const isV2Document = (document: any): document is v2.OpenAttestationDocum
 };
 
 export const isV3Document = (document: any): document is v3.OpenAttestationDocument => {
-  return !!document["@context"];
+  return !!document["@context"] && !!document["openAttestationMetadata"];
 };
 
 const getTemplateName = (document: OpenAttestationDocument): string => {
@@ -33,6 +34,9 @@ const getTemplateName = (document: OpenAttestationDocument): string => {
   }
   if (isV3Document(document) && document.openAttestationMetadata.template) {
     return document.openAttestationMetadata.template.name;
+  }
+  if (vc.isSignedDocument(document)) {
+    return [document.renderMethod]?.flat()?.[0]?.templateName;
   }
   return "";
 };
@@ -67,7 +71,15 @@ export function documentTemplates(
     })
     .filter((template) => (template.predicate ? template.predicate({ document }) : truePredicate()));
 
-  const tabsRenderedFromAttachments = (document.attachments || ([] as Attachment[]))
+  const attachments = vc.isSignedDocument(document)
+    ? [(document as SignedVerifiableCredential)?.credentialSubject]
+        .flat()
+        ?.map((s) => s.attachments)
+        ?.flat()
+    : isWrappedV2Document(document) || isWrappedV3Document(document)
+      ? document.attachments
+      : [];
+  const tabsRenderedFromAttachments = (attachments || ([] as Attachment[]))
     .map((attachment, index) =>
       isV2Attachment(attachment)
         ? {
