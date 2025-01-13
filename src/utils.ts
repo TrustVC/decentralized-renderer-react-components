@@ -1,5 +1,5 @@
 import { OpenAttestationDocument, v2, v3 } from "@tradetrust-tt/tradetrust";
-import { isWrappedV2Document, isWrappedV3Document, SignedVerifiableCredential, vc } from "@trustvc/trustvc";
+import { SignedVerifiableCredential, vc } from "@trustvc/trustvc";
 import { FunctionComponent } from "react";
 import { defaultTemplate } from "./DefaultTemplate";
 import { Attachment, TemplateRegistry, TemplateWithComponent, TemplateWithTypes } from "./types";
@@ -28,7 +28,7 @@ export const isV3Document = (document: any): document is v3.OpenAttestationDocum
   return !!document["@context"] && !!document["openAttestationMetadata"];
 };
 
-const getTemplateName = (document: OpenAttestationDocument): string => {
+const getTemplateName = (document: OpenAttestationDocument | SignedVerifiableCredential): string => {
   if (isV2Document(document) && typeof document.$template === "object") {
     return document.$template.name;
   }
@@ -52,20 +52,20 @@ export const getAttachmentMimeType = (attachment: Attachment): string => {
 const truePredicate = (): boolean => true;
 
 // TODO this function is weird, returns current template + templates for attachments
-export function documentTemplates(
-  document: OpenAttestationDocument,
-  templateRegistry: TemplateRegistry,
-  attachmentToComponent: (attachment: Attachment, document: OpenAttestationDocument) => FunctionComponent | null,
-): TemplateWithTypes[] {
+export function documentTemplates<D extends OpenAttestationDocument | SignedVerifiableCredential>(
+  document: D,
+  templateRegistry: TemplateRegistry<D>,
+  attachmentToComponent: (attachment: Attachment, document: D) => FunctionComponent | null,
+): TemplateWithTypes<D>[] {
   if (!document) return [];
   // Find the template in the template registry or use a default template
   const templateName = getTemplateName(document);
-  const selectedTemplate: TemplateWithComponent[] = (templateName && templateRegistry[templateName]) || [
+  const selectedTemplate: TemplateWithComponent<D>[] = (templateName && templateRegistry[templateName]) || [
     defaultTemplate,
   ];
 
   // Add type property to differentiate between custom template tabs VS attachments tab
-  const tabsRenderedFromCustomTemplates: TemplateWithTypes[] = selectedTemplate
+  const tabsRenderedFromCustomTemplates: TemplateWithTypes<D>[] = selectedTemplate
     .map((template) => {
       return { ...template, type: "custom-template" };
     })
@@ -77,11 +77,11 @@ export function documentTemplates(
         ?.map((s) => s.attachments)
         ?.filter(Boolean)
         ?.flat()
-    : isWrappedV2Document(document) || isWrappedV3Document(document)
+    : isV2Document(document) || isV3Document(document)
       ? document.attachments
       : [];
   const tabsRenderedFromAttachments = (attachments || ([] as Attachment[]))
-    .map((attachment, index) =>
+    .map((attachment: Attachment, index: number) =>
       isV2Attachment(attachment)
         ? {
             id: `attachment-${index}`,
@@ -96,7 +96,7 @@ export function documentTemplates(
             template: attachmentToComponent(attachment, document)!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
           },
     )
-    .filter((template) => template.template);
+    .filter((template: any) => template.template);
 
   return [...tabsRenderedFromCustomTemplates, ...tabsRenderedFromAttachments];
 }
