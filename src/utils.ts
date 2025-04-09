@@ -1,5 +1,5 @@
 import { v2, v3 } from "@tradetrust-tt/tradetrust";
-import { SignedVerifiableCredential, vc, OpenAttestationDocument, WrappedDocument, getDataV2 } from "@trustvc/trustvc";
+import { SignedVerifiableCredential, vc, OpenAttestationDocument, WrappedDocument } from "@trustvc/trustvc";
 import { FunctionComponent } from "react";
 import { defaultTemplate } from "./DefaultTemplate";
 import { Attachment, TemplateRegistry, TemplateWithComponent, TemplateWithTypes } from "./types";
@@ -102,13 +102,12 @@ export function documentTemplates<D extends OpenAttestationDocument | SignedVeri
   return [...tabsRenderedFromCustomTemplates, ...tabsRenderedFromAttachments];
 }
 export type WrappedOrSignedOpenAttestationDocument = WrappedDocument<OpenAttestationDocument>;
-export const getTemplateUrl = (rawDocument: WrappedOrSignedOpenAttestationDocument): string | undefined => {
-  if (vc.isSignedDocument(rawDocument)) {
-    return [(rawDocument as unknown as SignedVerifiableCredential).renderMethod]?.flat()?.[0]?.id;
-  } else if (isV2Document(rawDocument)) {
-    const documentData = getDataV2(rawDocument as any);
-    return typeof documentData.$template === "object" ? documentData.$template.url : undefined;
-  } else if (isV3Document(rawDocument)) {
-    return rawDocument.openAttestationMetadata?.template?.url;
+export const getTemplateUrl = (document: WrappedOrSignedOpenAttestationDocument): string | undefined => {
+  if (vc.isSignedDocument(document)) {
+    return [(document as unknown as SignedVerifiableCredential).renderMethod]?.flat()?.[0]?.id;
+  } else if (isV2Document(document)) {
+    return typeof document.$template === "object" ? document.$template.url : undefined;
+  } else if (isV3Document(document)) {
+    return document.openAttestationMetadata?.template?.url;
   }
 };
