@@ -1,8 +1,8 @@
-# TradeTrust (Decentralized Renderer React Components)
+# TrustVC (Decentralized Renderer React Components)
 
-React components abstracting the communication with `TradeTrust` decentralized renderer. More information on this:
+React components abstracting the communication with `TrustVC` decentralized renderer. More information on this:
 
-- [TradeTrust Decentralized Renderer](https://docs.tradetrust.io/docs/tutorial/decentralised-renderer)
+- [TrustVC Decentralized Renderer](https://docs.tradetrust.io/docs/tutorial/decentralised-renderer)
 
 ## Features
 
@@ -53,7 +53,7 @@ The following list of actions are made for host to communicate to the iframe (an
 - render a document:
   - type: `RENDER_DOCUMENT`
   - payload: object with 2 properties
-    - document: (mandatory) document data as returned by `getData` method from [@tradetrust-tt/tradetrust](https://github.com/TradeTrust/tradetrust)
+    - document: (mandatory) document data as returned by `getDataV2` method from [@trustvc/trustvc](https://github.com/TrustVC/TrustVC)
     - rawDocument: (optional) Open Attestation document
 
 ```javascript
@@ -90,7 +90,7 @@ There is a 4th action that can be used in the context of react-native applicatio
 
 - request for the list of templates for a document. The action directly return the list of templates
   - type: `GET_TEMPLATES`
-  - payload: (mandatory) document data as returned by `getData` method from [@tradetrust-tt/tradetrust](https://github.com/TradeTrust/tradetrust)
+  - payload: (mandatory) document data as returned by `getDataV2` method from [@trustvc/trustvc](https://github.com/TrustVC/TrustVC)
 
 ```javascript
 const action = {
@@ -185,7 +185,7 @@ Please check the code in `example/decentralized-renderer` to see how to use this
 
 Each configured `Template` will be provided the following properties, when rendering a document:
 
-- `document`: (mandatory) document data as returned by `getData` method from [@tradetrust-tt/tradetrust](https://github.com/TradeTrust/tradetrust)
+- `document`: (mandatory) document data as returned by `getDataV2` method from [@trustvc/trustvc](https://github.com/TrustVC/TrustVC)
 - `rawDocument`: (optional) Open Attestation document
 - `handleObfuscation`: (mandatory) A function to call to handle obfuscation in the document. The value provided must follow path property as handled by [lodash#get](https://lodash.com/docs/4.17.15#get)
 
@@ -197,7 +197,7 @@ Each configured `Template` will be provided the following properties, when rende
 - `npm run example:application`: to run the example build with the library to develop an hosting application. Don't forget to update the example if you update this library.
 - `npm run example:renderer`: to run the example build with the library to develop a decentralized renderer. Don't forget to update the example if you update this library.
 
-We also provided a [github template](https://github.com/TradeTrust/tradetrust-decentralized-renderer) to build your own decentralized-renderer based on this library
+We also provided a [github template](https://github.com/TrustVC/decentralized-renderer) to build your own decentralized-renderer based on this library
 
 ## Penpal
 
