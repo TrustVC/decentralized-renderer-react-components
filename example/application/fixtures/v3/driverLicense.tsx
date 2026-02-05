@@ -1,4 +1,4 @@
-import { v3 } from "@tradetrust-tt/tradetrust";
+import { v3 } from "@trustvc/trustvc";
 
 export interface DriverLicense extends v3.OpenAttestationDocument {
   name: string;

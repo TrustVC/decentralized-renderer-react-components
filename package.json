@@ -15,8 +15,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@peculiar/webcrypto": "^1.5.0",
-    "@tradetrust-tt/tradetrust": "^6.10.0",
-    "@trustvc/trustvc": "^2.0.0",
+    "@trustvc/trustvc": "^2.5.2",
     "crypto-browserify": "^3.12.1",
     "debug": "^4.4.0",
     "os-browserify": "^0.3.0",
@@ -82,6 +81,7 @@
     "babel-loader": "^9.2.1",
     "buffer": "^6.0.3",
     "cross-env": "^7.0.3",
+    "dotenv": "^17.2.3",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-jest": "^27.9.0",
@@ -203,6 +203,6 @@
     "url": "https://github.com/TrustVC/decentralized-renderer-react-components.git"
   },
   "engines": {
-    "node": ">=18.x"
+    "node": ">=22.x"
   }
 }

@@ -1,6 +1,5 @@
 // actions sent by host to frame
-import { OpenAttestationDocument, WrappedDocument } from "@tradetrust-tt/tradetrust";
-import { SignedVerifiableCredential } from "@trustvc/trustvc";
+import { OpenAttestationDocument, WrappedDocument, SignedVerifiableCredential } from "@trustvc/trustvc";
 import { ActionType, createAction } from "typesafe-actions";
 
 export const renderDocument = createAction("RENDER_DOCUMENT")<{

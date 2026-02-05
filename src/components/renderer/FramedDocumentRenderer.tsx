@@ -7,8 +7,7 @@ import { FrameActions, obfuscateField, updateHeight, updateTemplates } from "../
 import { HostConnector } from "../frame/HostConnector";
 import { DomListener } from "../common/DomListener";
 import { noAttachmentRenderer } from "./NoAttachmentRenderer";
-import { OpenAttestationDocument, WrappedDocument, v2, v3 } from "@tradetrust-tt/tradetrust";
-import { SignedVerifiableCredential } from "@trustvc/trustvc";
+import { OpenAttestationDocument, WrappedDocument, v2, v3, SignedVerifiableCredential } from "@trustvc/trustvc";
 
 const { trace } = getLogger("FramedDocumentRenderer");
 
