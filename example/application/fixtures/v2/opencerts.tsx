@@ -1,5 +1,5 @@
 import { OpencertsDocuments } from "../../../types";
-import { SchemaId, v2, WrappedDocument } from "@tradetrust-tt/tradetrust";
+import { SchemaId, v2, WrappedDocument } from "@trustvc/trustvc";
 
 export const rawOpencerts: OpencertsDocuments = {
   id: "53b75bbe",

@@ -52,6 +52,7 @@ module.exports = {
   plugins: [
     new webpack.ProvidePlugin({
       process: "process/browser",
+      Buffer: ["buffer", "Buffer"],
     }),
     new webpack.ContextReplacementPlugin(
       /(@mattrglobal\/node-bbs-signatures)/,

@@ -1,4 +1,4 @@
-import { v2 } from "@tradetrust-tt/tradetrust";
+import { v2 } from "@trustvc/trustvc";
 
 // sample example should ideally be extracted from opencerts schema
 export interface OpencertsDocuments extends v2.OpenAttestationDocument {

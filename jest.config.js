@@ -3,7 +3,7 @@
 const config = {
   verbose: true,
   coverageDirectory: "coverage",
-  setupFiles: ["<rootDir>/jest.setup.ts"],
+  setupFiles: ["dotenv/config", "<rootDir>/jest.setup.ts"],
   setupFilesAfterEnv: ["<rootDir>/src/jest.setup.ts"],
   testEnvironment: "jsdom",
   testMatch: ["**/?(*.)test.[jt]s?(x)"],

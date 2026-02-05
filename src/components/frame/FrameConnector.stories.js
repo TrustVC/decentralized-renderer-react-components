@@ -9,7 +9,7 @@ export default {
 
 export const WithStyle = {
   args: {
-    source: "https://opencerts.io",
+    source: "https://generic-templates.tradetrust.io",
     style: {
       width: "100%",
       height: "200px",
@@ -20,7 +20,7 @@ export const WithStyle = {
 
 export const WithEmotion = {
   args: {
-    source: "https://opencerts.io",
+    source: "https://generic-templates.tradetrust.io",
     css: css`
       width: 100%;
       height: 200px;

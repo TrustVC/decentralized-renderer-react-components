@@ -2,7 +2,7 @@
 
 React components abstracting the communication with `TrustVC` decentralized renderer. More information on this:
 
-- [TrustVC Decentralized Renderer](https://docs.tradetrust.io/docs/tutorial/decentralised-renderer)
+- [TrustVC Decentralized Renderer](https://docs.tradetrust.io/docs/tutorial/decentralized-renderer)
 
 ## Features
 

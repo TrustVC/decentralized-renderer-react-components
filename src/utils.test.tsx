@@ -1,5 +1,4 @@
-import { v2 } from "@tradetrust-tt/tradetrust";
-import { SignedVerifiableCredential } from "@trustvc/trustvc";
+import { v2, SignedVerifiableCredential } from "@trustvc/trustvc";
 import React from "react";
 import { fullAttachmentRenderer } from "./components/renderer/FullAttachmentRenderer";
 import { noAttachmentRenderer } from "./components/renderer/NoAttachmentRenderer";
