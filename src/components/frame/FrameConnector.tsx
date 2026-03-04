@@ -86,7 +86,8 @@ export const FrameConnector: FunctionComponent<FrameConnectorProps> = ({
     };
   }, [dispatchProxy]);
 
-  const isOpenCerts = typeof window !== "undefined" && window.location.hostname.endsWith("opencerts.io");
+  const hostname = typeof window !== "undefined" ? window.location.hostname : "";
+  const isOpenCerts = hostname === "opencerts.io" || hostname.endsWith(".opencerts.io");
   const DEFAULT_RENDERER_URL = `https://generic-templates.tradetrust.io`;
   const originalIframe = useRef<HTMLIFrameElement>(null);
   const fallbackIframe = useRef<HTMLIFrameElement>(null);
