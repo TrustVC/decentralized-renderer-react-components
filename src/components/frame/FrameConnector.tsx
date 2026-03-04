@@ -1,6 +1,7 @@
 import React, { CSSProperties, FunctionComponent, useEffect, useMemo, useRef, useState } from "react";
 import { useChildFrame } from "./useFrame";
 import { HostActions, HostActionsHandler, LegacyHostActions } from "./host.actions";
+import { ConnectionFailureTemplate } from "../../DefaultTemplate";
 import {
   FrameActions,
   LegacyFrameActions,
@@ -85,6 +86,7 @@ export const FrameConnector: FunctionComponent<FrameConnectorProps> = ({
     };
   }, [dispatchProxy]);
 
+  const isOpenCerts = typeof window !== "undefined" && window.location.hostname.endsWith("opencerts.io");
   const DEFAULT_RENDERER_URL = `https://generic-templates.tradetrust.io`;
   const originalIframe = useRef<HTMLIFrameElement>(null);
   const fallbackIframe = useRef<HTMLIFrameElement>(null);
@@ -170,10 +172,14 @@ export const FrameConnector: FunctionComponent<FrameConnectorProps> = ({
     <>
       {!useFallbackSource ? (
         timeout ? (
-          <>
-            <h3>Connection timeout on renderer</h3>
-            <p>Please contact the administrator of {source}.</p>
-          </>
+          isOpenCerts ? (
+            <ConnectionFailureTemplate source={source} />
+          ) : (
+            <>
+              <h3>Connection timeout on renderer</h3>
+              <p>Please contact the administrator of {source}.</p>
+            </>
+          )
         ) : (
           <iframe
             title="Decentralised Rendered Certificate"
