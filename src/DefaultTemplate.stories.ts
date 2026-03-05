@@ -1,4 +1,5 @@
-import { DefaultTemplate } from "./DefaultTemplate";
+import React from "react";
+import { DefaultTemplate, ConnectionFailureTemplate } from "./DefaultTemplate";
 
 export default {
   title: "DefaultTemplate",
@@ -23,5 +24,17 @@ export const NonEditableValue = {
         url: "http://localhost:3000",
       },
     },
+  },
+};
+
+export const ConnectionFailure = {
+  name: "Connection Failure (OpenCerts only)",
+  render: ConnectionFailureTemplate,
+  decorators: [
+    (Story: any) =>
+      React.createElement("div", { style: { padding: "4rem 0", textAlign: "center" } }, React.createElement(Story)),
+  ],
+  args: {
+    source: "http://localhost:3000",
   },
 };
