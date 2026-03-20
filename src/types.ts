@@ -1,6 +1,9 @@
 import { ComponentType } from "react";
 import { v2, WrappedDocument, OpenAttestationDocument, v3, SignedVerifiableCredential } from "@trustvc/trustvc";
 
+export type Document = SignedVerifiableCredential | OpenAttestationDocument;
+export type { OpenAttestationDocument, SignedVerifiableCredential } from '@trustvc/trustvc';
+
 export type Attachment = v2.Attachment | v3.Attachment;
 export interface Renderer {
   attachment: Attachment;
@@ -9,7 +12,7 @@ export interface Renderer {
 export interface TemplateProps<D extends OpenAttestationDocument | SignedVerifiableCredential> {
   document: D;
   wrappedDocument?: WrappedDocument<OpenAttestationDocument> | SignedVerifiableCredential;
-  handleObfuscation: (field: string) => void;
+  handleObfuscation?: (field: string) => void;
   errorType?: string;
 }
 

@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
 
 // no tests because js-dom doesn't support MutationObserver
 // https://github.com/jsdom/jsdom/issues/639
@@ -24,15 +23,16 @@ export class DomListener extends Component<DomListenerProps> {
   public observer: MutationObserver;
   private readonly onResize: () => void;
   private readonly onDomChange: () => void;
+  private readonly rootRef: React.RefObject<HTMLDivElement>;
   constructor(props: DomListenerProps) {
     super(props);
     this.onResize = this.onUpdateHeight("resize").bind(this);
     this.onDomChange = this.onUpdateHeight("domChange").bind(this);
     this.observer = new MutationObserver(this.onDomChange);
+    this.rootRef = React.createRef<HTMLDivElement>();
   }
   componentDidMount(): void {
-    // eslint-disable-next-line react/no-find-dom-node
-    const rootNode = ReactDOM.findDOMNode(this);
+    const rootNode = this.rootRef.current;
     if (rootNode) {
       this.observer.observe(rootNode, { attributes: true, childList: true, subtree: true, characterData: true });
       // need an initial trigger, make it run on next tick :shrug:
@@ -51,6 +51,6 @@ export class DomListener extends Component<DomListenerProps> {
   }
 
   render(): React.ReactNode {
-    return <div>{this.props.children}</div>;
+    return <div ref={this.rootRef}>{this.props.children}</div>;
   }
 }

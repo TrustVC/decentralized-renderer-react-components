@@ -59,7 +59,7 @@ export const FrameConnector: FunctionComponent<FrameConnectorProps> = ({
   onConnected,
   style,
   className = "",
-  sandbox = "allow-scripts allow-same-origin allow-modals allow-popups",
+  sandbox = "allow-scripts allow-same-origin allow-modals allow-popups allow-presentation",
   useFallbackRenderer = false,
 }) => {
   // this is used to store internally the latest templates shared in order to automatically transform
