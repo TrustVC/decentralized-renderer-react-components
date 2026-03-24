@@ -2,7 +2,7 @@ import { ComponentType } from "react";
 import { v2, WrappedDocument, OpenAttestationDocument, v3, SignedVerifiableCredential } from "@trustvc/trustvc";
 
 export type Document = SignedVerifiableCredential | OpenAttestationDocument;
-export type { OpenAttestationDocument, SignedVerifiableCredential } from '@trustvc/trustvc';
+export type { OpenAttestationDocument, SignedVerifiableCredential } from "@trustvc/trustvc";
 
 export type Attachment = v2.Attachment | v3.Attachment;
 export interface Renderer {
