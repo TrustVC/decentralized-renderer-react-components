@@ -44,6 +44,16 @@ const formatAmountInFigures = (currencyCode?: string, amountInFigures?: string):
   return [currencyCode, amount].filter(Boolean).join(" ");
 };
 
+/**
+ * Signature comes from credential data and must never be used as an arbitrary
+ * image URL (e.g. a remote tracking pixel). Only accept self-contained inline
+ * base64 image data.
+ */
+const DATA_IMAGE_URI = /^data:image\/(png|jpe?g|gif|webp|svg\+xml);base64,[A-Za-z0-9+/]+=*$/;
+
+const isValidInlineImage = (value?: string): value is string =>
+  !!value && DATA_IMAGE_URI.test(value);
+
 const extractData = (document: any): BillOfExchangeDocument => {
   if (!document || typeof document !== "object") return {};
   if (document.credentialSubject && typeof document.credentialSubject === "object") {
@@ -136,7 +146,7 @@ const SignatureImageCell = ({
         minHeight: 72,
       }}
     >
-      {signature ? (
+      {isValidInlineImage(signature) ? (
         <img
           src={signature}
           alt={`${label} image`}
@@ -258,7 +268,7 @@ export const Template: FunctionComponent<TemplateProps<any>> = ({ document }) =>
             />
           </tr>
           <tr>
-            <SignatureImageCell label="signature" signature={drawee?.signature} colSpan={2} />
+            <SignatureImageCell label="Signature" signature={drawee?.signature} colSpan={2} />
             <SignatureImageCell label="Signature" signature={drawer?.signature} colSpan={2} />
           </tr>
         </tbody>

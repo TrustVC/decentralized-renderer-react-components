@@ -4,6 +4,8 @@ import { fullAttachmentRenderer } from "./components/renderer/FullAttachmentRend
 import { noAttachmentRenderer } from "./components/renderer/NoAttachmentRenderer";
 import { TemplateRegistry } from "./types";
 import { documentTemplates, repeat } from "./utils";
+import { registry } from "../example/decentralized-renderer/templates";
+import { Template as BillOfExchangeTemplate } from "../example/decentralized-renderer/templates/billOfExchange/template";
 
 describe("repeat", () => {
   it("should not call callback when times is 0", () => {
@@ -200,15 +202,13 @@ describe("documentTemplates", () => {
         proofValue: "uTEST",
       },
     } as unknown as SignedVerifiableCredential;
-    const BillOfExchange: React.FunctionComponent = () => <div>BoE</div>;
-    const templateRegistry: TemplateRegistry<any> = {
-      BILL_OF_EXCHANGE: [{ id: "bill-of-exchange-template", label: "Bill of Exchange", template: BillOfExchange }],
-    };
-    expect(documentTemplates(document, templateRegistry, noAttachmentRenderer)).toStrictEqual([
+    expect(
+      documentTemplates(document, registry as unknown as TemplateRegistry<any>, noAttachmentRenderer),
+    ).toStrictEqual([
       {
         id: "bill-of-exchange-template",
         label: "Bill of Exchange",
-        template: BillOfExchange,
+        template: BillOfExchangeTemplate,
         type: "custom-template",
       },
     ]);
