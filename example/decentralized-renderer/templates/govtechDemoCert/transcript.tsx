@@ -149,7 +149,7 @@ export class DemoTranscript extends Component<TemplateProps<any>, { editable: bo
             </div>
           </div>
 
-          {transcriptData !== [] && (
+          {transcriptData.length > 0 && (
             <div className="row mb-4" style={{ paddingLeft: "3%", paddingTop: "5%" }}>
               <div className="root cert-title">
                 <b>Transcript</b>
