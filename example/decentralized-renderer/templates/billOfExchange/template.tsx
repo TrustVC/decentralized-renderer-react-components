@@ -38,11 +38,13 @@ const formatBoeDate = (input?: string): string => {
 
 const formatAmountInFigures = (currencyCode?: string, amountInFigures?: string): string => {
   if (!amountInFigures && !currencyCode) return "";
-  const numericAmount = Number(amountInFigures);
-  const amount =
-    amountInFigures && Number.isFinite(numericAmount)
-      ? new Intl.NumberFormat("en-US").format(numericAmount)
-      : amountInFigures || "";
+  const amount = amountInFigures
+    ? amountInFigures.replace(
+        /^([+-]?\d+)(\.\d+)?$/,
+        (_, whole: string, fraction = "") =>
+          `${whole.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}${fraction}`,
+      )
+    : "";
   return [currencyCode, amount].filter(Boolean).join(" ");
 };
 
