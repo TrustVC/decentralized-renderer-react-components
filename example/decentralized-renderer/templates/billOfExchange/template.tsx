@@ -38,10 +38,13 @@ const formatBoeDate = (input?: string): string => {
 
 const formatAmountInFigures = (currencyCode?: string, amountInFigures?: string): string => {
   if (!amountInFigures && !currencyCode) return "";
-  const amount = amountInFigures
-    ? new Intl.NumberFormat("en-US").format(Number(amountInFigures) || 0)
-    : "";
+  const numericAmount = Number(amountInFigures);
+  const amount =
+    amountInFigures && Number.isFinite(numericAmount)
+      ? new Intl.NumberFormat("en-US").format(numericAmount)
+      : amountInFigures || "";
   return [currencyCode, amount].filter(Boolean).join(" ");
+};
 };
 
 const extractData = (document: any): BillOfExchangeDocument => {
