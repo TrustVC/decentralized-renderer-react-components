@@ -45,7 +45,6 @@ const formatAmountInFigures = (currencyCode?: string, amountInFigures?: string):
       : amountInFigures || "";
   return [currencyCode, amount].filter(Boolean).join(" ");
 };
-};
 
 /**
  * Signature comes from credential data and must never be used as an arbitrary
