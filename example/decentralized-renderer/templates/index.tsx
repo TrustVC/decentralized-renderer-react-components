@@ -6,10 +6,12 @@
 import CustomTemplate from "./customTemplate";
 import GovTechDemoCert from "./govtechDemoCert";
 import DriverLicense from "./driverLicense";
+import BillOfExchange from "./billOfExchange";
 
 export const registry = {
   CUSTOM_TEMPLATE: CustomTemplate,
   GOVTECH_DEMO: GovTechDemoCert,
   DRIVER_LICENSE: DriverLicense,
+  BILL_OF_EXCHANGE: BillOfExchange,
   NULL: [],
 };

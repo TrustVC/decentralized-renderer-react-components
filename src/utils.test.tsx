@@ -174,4 +174,43 @@ describe("documentTemplates", () => {
       }),
     ]);
   });
+
+  it("should resolve BILL_OF_EXCHANGE from a modern W3C DataIntegrityProof VC", () => {
+    const document = {
+      "@context": [
+        "https://www.w3.org/ns/credentials/v2",
+        "https://w3id.org/security/data-integrity/v2",
+        "https://trustvc.io/context/render-method-context-v2.json",
+      ],
+      type: ["VerifiableCredential"],
+      issuer: "did:web:example.com",
+      renderMethod: [
+        {
+          id: "http://localhost:9000",
+          type: "EMBEDDED_RENDERER",
+          templateName: "BILL_OF_EXCHANGE",
+        },
+      ],
+      credentialSubject: { referenceNumber: "BOE-1" },
+      proof: {
+        type: "DataIntegrityProof",
+        cryptosuite: "ecdsa-sd-2023",
+        proofPurpose: "assertionMethod",
+        verificationMethod: "did:web:example.com#keys-1",
+        proofValue: "uTEST",
+      },
+    } as unknown as SignedVerifiableCredential;
+    const BillOfExchange: React.FunctionComponent = () => <div>BoE</div>;
+    const templateRegistry: TemplateRegistry<any> = {
+      BILL_OF_EXCHANGE: [{ id: "bill-of-exchange-template", label: "Bill of Exchange", template: BillOfExchange }],
+    };
+    expect(documentTemplates(document, templateRegistry, noAttachmentRenderer)).toStrictEqual([
+      {
+        id: "bill-of-exchange-template",
+        label: "Bill of Exchange",
+        template: BillOfExchange,
+        type: "custom-template",
+      },
+    ]);
+  });
 });

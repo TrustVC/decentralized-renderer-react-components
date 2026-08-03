@@ -15,7 +15,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@peculiar/webcrypto": "^1.5.0",
-    "@trustvc/trustvc": "^2.5.2",
+    "@trustvc/trustvc": "2.16.0-beta.1",
     "crypto-browserify": "^3.12.1",
     "debug": "^4.4.0",
     "os-browserify": "^0.3.0",
