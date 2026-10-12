@@ -95,6 +95,9 @@ export const FrameConnector: FunctionComponent<FrameConnectorProps> = ({
   const [errorType, setErrorType] = useState<string | undefined>(undefined);
   const [useFallbackSource, setUseFallbackSource] = useState(false);
   const [hideDisplay, setHideDisplay] = useState(true);
+  const [iframeInstance, setIframeInstance] = useState(0);
+  const didRetryHandshake = useRef(false);
+  const ignoringStaleTimeout = useRef(false);
   const [connected, timeout, toFrame, updateIframeRef] = useChildFrame({
     methods,
     dispatch: dispatchProxy,
@@ -102,12 +105,18 @@ export const FrameConnector: FunctionComponent<FrameConnectorProps> = ({
   });
 
   useEffect(() => {
+    didRetryHandshake.current = false;
+    ignoringStaleTimeout.current = false;
+    setIframeInstance(0);
+  }, [source]);
+
+  useEffect(() => {
     if (useFallbackSource) {
       updateIframeRef(fallbackIframe.current);
     } else {
       updateIframeRef(originalIframe.current);
     }
-  }, [useFallbackSource, updateIframeRef]);
+  }, [useFallbackSource, updateIframeRef, iframeInstance]);
 
   useEffect(() => {
     if (connected) {
@@ -159,20 +168,44 @@ export const FrameConnector: FunctionComponent<FrameConnectorProps> = ({
   }, [source]);
 
   useEffect(() => {
-    if (timeout) {
-      if (useFallbackRenderer) {
-        setSourceToUse(DEFAULT_RENDERER_URL);
-        setErrorType("TIMEOUT");
-      }
-
-      dispatch(timeoutAction());
+    if (!timeout) {
+      ignoringStaleTimeout.current = false;
+      return;
     }
-  }, [timeout, dispatch, DEFAULT_RENDERER_URL, useFallbackRenderer]);
+    // A remounted iframe still reports TIMEOUT until useChildFrame swaps the ref.
+    if (ignoringStaleTimeout.current) {
+      return;
+    }
+
+    const original = (source ?? "").replace(/\/+$/, "");
+    const fallback = DEFAULT_RENDERER_URL.replace(/\/+$/, "");
+    const isDefaultRenderer = !original || original === fallback;
+
+    // First handshake to the default renderer often times out on a cold SPA load.
+    // Retry once without forcing the raw-data template (useFallbackSource).
+    if (useFallbackRenderer && isDefaultRenderer && !didRetryHandshake.current) {
+      didRetryHandshake.current = true;
+      ignoringStaleTimeout.current = true;
+      setIframeInstance((id) => id + 1);
+      return;
+    }
+
+    if (useFallbackRenderer) {
+      setSourceToUse(DEFAULT_RENDERER_URL);
+      setErrorType("TIMEOUT");
+    }
+
+    dispatch(timeoutAction());
+  }, [timeout, dispatch, DEFAULT_RENDERER_URL, useFallbackRenderer, source]);
+
+  const iframeStyle: CSSProperties = hideDisplay
+    ? { ...style, visibility: "hidden", pointerEvents: "none" }
+    : (style ?? {});
 
   return (
     <>
       {!useFallbackSource ? (
-        timeout ? (
+        timeout && !useFallbackRenderer ? (
           isOpenCerts ? (
             <ConnectionFailureTemplate source={source} />
           ) : (
@@ -183,13 +216,15 @@ export const FrameConnector: FunctionComponent<FrameConnectorProps> = ({
           )
         ) : (
           <iframe
+            key={iframeInstance}
             title="Decentralised Rendered Certificate"
             id="iframe"
             ref={originalIframe}
             src={sourceToUse}
-            style={hideDisplay ? { display: "none" } : style}
+            style={iframeStyle}
             className={className}
             sandbox={sandbox}
+            loading="eager"
           />
         )
       ) : (
@@ -201,6 +236,7 @@ export const FrameConnector: FunctionComponent<FrameConnectorProps> = ({
           style={style}
           className={className}
           sandbox={sandbox}
+          loading="eager"
         />
       )}
     </>

@@ -1,4 +1,4 @@
-import { RefObject, useCallback, useEffect, useState } from "react";
+import { RefObject, useCallback, useEffect, useRef, useState } from "react";
 import { connectToParent, connectToChild, ErrorCode } from "penpal";
 import { PenpalError } from "penpal/lib/types";
 import connectToChildV4 from "penpal-v4/lib/connectToChild";
@@ -8,7 +8,9 @@ import { inIframe } from "../../utils";
 import { getLogger } from "../../logger";
 
 const { trace } = getLogger("useFrame");
-const TIMEOUT = 5000;
+// Cold loads of renderer SPAs (e.g. generic-templates) commonly exceed 5s, especially
+// when the parent page is busy (large BoE/obligation documents with inline signatures).
+const TIMEOUT = 15000;
 
 type Status = "TIMEOUT" | "DISCONNECTED" | "CONNECTING" | "CONNECTED";
 
@@ -67,6 +69,7 @@ export const useChildFrame = function (
   const [childFrameConnection, setChildFrameConnection] = useState<any>();
   const [status, setStatus] = useState<Status>("DISCONNECTED");
   const [iframeRef, setIframeRef] = useState<HTMLIFrameElement | null>(props.iframe.current);
+  const connectionGeneration = useRef(0);
 
   const updateIframeRef = useCallback(
     (newIframe: HTMLIFrameElement | null) => {
@@ -80,6 +83,7 @@ export const useChildFrame = function (
 
   useEffect(() => {
     if (iframeRef && status === "DISCONNECTED") {
+      const generation = ++connectionGeneration.current;
       const childV5 = connectToChild({
         methods: {
           dispatch: props.dispatch,
@@ -102,11 +106,13 @@ export const useChildFrame = function (
 
       Promise.any([childV5, childV4])
         .then((childConnection) => {
+          if (generation !== connectionGeneration.current) return;
           trace("connectToChild success: ", childConnection);
           setChildFrameConnection(childConnection);
           setStatus("CONNECTED");
         })
         .catch((err: AggregateError) => {
+          if (generation !== connectionGeneration.current) return;
           trace("connectToChild failed: ", err);
           if (err.errors.map((e: PenpalError) => e.code).some((c) => c === ErrorCode.ConnectionTimeout)) {
             setStatus("TIMEOUT");
