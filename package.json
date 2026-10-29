@@ -60,7 +60,6 @@
     "@babel/preset-react": "^7.26.3",
     "@babel/preset-typescript": "^7.26.0",
     "@emotion/babel-preset-css-prop": "^11.11.0",
-    "@mattrglobal/node-bbs-signatures": "^0.20.0",
     "@storybook/addon-essentials": "^8.5.1",
     "@storybook/addon-mdx-gfm": "^8.5.1",
     "@storybook/addon-webpack5-compiler-babel": "^3.0.5",
