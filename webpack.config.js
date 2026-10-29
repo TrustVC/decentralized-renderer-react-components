@@ -10,7 +10,7 @@ module.exports = {
     libraryTarget: "umd",
     library: "decentralizedRenderer",
     globalObject: "this",
-    publicPath: "/",
+    publicPath: "auto",
   },
   externals: {
     react: "react",
