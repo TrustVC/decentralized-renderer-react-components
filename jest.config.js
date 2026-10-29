@@ -31,6 +31,7 @@ const config = {
     "node:events": "<rootDir>/node_modules/events",
     "node:process": "<rootDir>/node_modules/process",
     "^cborg$": "<rootDir>/node_modules/cborg/cborg.js",
+    "^\\./pdfWorkerSrc$": "<rootDir>/_mocks_/pdfWorkerSrcMock.js",
   },
   transformIgnorePatterns: ["node_modules/?!(@tradetrust-tt).*/"],
 };
