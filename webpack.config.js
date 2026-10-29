@@ -2,7 +2,8 @@ const webpack = require("webpack");
 
 module.exports = {
   mode: process.env.NODE_ENV ?? "development",
-  entry: "./src/index.tsx",
+  // The first entry sets the public path at load; the library exports come from the last.
+  entry: ["./scripts/umd-public-path.js", "./src/index.tsx"],
   devtool: "source-map",
   output: {
     path: __dirname + "/build",
@@ -10,7 +11,7 @@ module.exports = {
     libraryTarget: "umd",
     library: "decentralizedRenderer",
     globalObject: "this",
-    publicPath: "auto",
+    publicPath: "",
   },
   externals: {
     react: "react",
