@@ -5,8 +5,10 @@
 // no document, so they skip this instead of throwing at require time.
 /* amd-capture:start */
 (function () {
-  if (typeof document === "undefined" || !document.currentScript || !document.currentScript.src) return;
+  if (typeof document === "undefined") return;
   var root = typeof self !== "undefined" ? self : this;
+  if (!root || root.__decentralizedRendererBundleSrc) return;
+  if (!document.currentScript || !document.currentScript.src) return;
   root.__decentralizedRendererBundleSrc = document.currentScript.src;
 })();
 /* amd-capture:end */
