@@ -1,4 +1,12 @@
+const fs = require("fs");
+const path = require("path");
 const webpack = require("webpack");
+
+const umdPublicPathSource = fs.readFileSync(path.join(__dirname, "scripts/umd-public-path.js"), "utf8");
+const amdCapture = umdPublicPathSource.match(/\/\* amd-capture:start \*\/\s*([\s\S]*?)\s*\/\* amd-capture:end \*\//);
+if (!amdCapture) {
+  throw new Error("scripts/umd-public-path.js is missing the amd-capture block");
+}
 
 module.exports = {
   mode: process.env.NODE_ENV ?? "development",
@@ -18,6 +26,11 @@ module.exports = {
     "react-dom": "react-dom",
   },
   plugins: [
+    new webpack.BannerPlugin({
+      banner: amdCapture[1],
+      raw: true,
+      entryOnly: true,
+    }),
     new webpack.ContextReplacementPlugin(
       /(@mattrglobal\/node-bbs-signatures)/,
       `${__dirname}/node_modules/@mattrglobal/node-bbs-signatures`,
