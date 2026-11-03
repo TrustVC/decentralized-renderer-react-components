@@ -1,8 +1,17 @@
+const fs = require("fs");
+const path = require("path");
 const webpack = require("webpack");
+
+const umdPublicPathSource = fs.readFileSync(path.join(__dirname, "scripts/umd-public-path.js"), "utf8");
+const amdCapture = umdPublicPathSource.match(/\/\* amd-capture:start \*\/\s*([\s\S]*?)\s*\/\* amd-capture:end \*\//);
+if (!amdCapture) {
+  throw new Error("scripts/umd-public-path.js is missing the amd-capture block");
+}
 
 module.exports = {
   mode: process.env.NODE_ENV ?? "development",
-  entry: "./src/index.tsx",
+  // The first entry sets the public path at load; the library exports come from the last.
+  entry: ["./scripts/umd-public-path.js", "./src/index.tsx"],
   devtool: "source-map",
   output: {
     path: __dirname + "/build",
@@ -10,13 +19,18 @@ module.exports = {
     libraryTarget: "umd",
     library: "decentralizedRenderer",
     globalObject: "this",
-    publicPath: "/",
+    publicPath: "",
   },
   externals: {
     react: "react",
     "react-dom": "react-dom",
   },
   plugins: [
+    new webpack.BannerPlugin({
+      banner: amdCapture[1],
+      raw: true,
+      entryOnly: true,
+    }),
     new webpack.ContextReplacementPlugin(
       /(@mattrglobal\/node-bbs-signatures)/,
       `${__dirname}/node_modules/@mattrglobal/node-bbs-signatures`,

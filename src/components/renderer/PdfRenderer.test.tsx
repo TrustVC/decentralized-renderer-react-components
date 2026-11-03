@@ -1,6 +1,13 @@
+import { readFileSync } from "fs";
+import { join } from "path";
 import React from "react";
 import { render, waitFor } from "@testing-library/react";
+import { pdfjs } from "react-pdf";
 import { PdfRenderer } from "./PdfRenderer";
+
+jest.mock("./pdfWorkerSrc", (): typeof import("./pdfWorkerSrc") => ({
+  pdfWorkerSrc: "/pdf.worker.min.js",
+}));
 
 // Mock react-pdf to simulate different scenarios
 jest.mock(
@@ -31,6 +38,14 @@ jest.mock(
 );
 
 describe("component PdfRenderer", () => {
+  it("should load the pdf.js worker from the bundled package instead of a third-party CDN", () => {
+    const source = readFileSync(join(__dirname, "pdfWorkerSrc.ts"), "utf8");
+    expect(source).toContain('new URL("pdfjs-dist/build/pdf.worker.min.js", import.meta.url)');
+    expect(source).not.toMatch(/unpkg\.com|cdnjs\.cloudflare|jsdelivr\.net/);
+    expect(pdfjs.GlobalWorkerOptions.workerSrc).toBe("/pdf.worker.min.js");
+    expect(String(pdfjs.GlobalWorkerOptions.workerSrc).startsWith("//")).toBe(false);
+  });
+
   it("should show error message for invalid base64 data like 'BASE64_ENCODED_FILE'", async () => {
     const { getByAltText } = render(
       <PdfRenderer attachment={{ type: "application/pdf", data: "BASE64_ENCODED_FILE", filename: "test.pdf" }} />,
